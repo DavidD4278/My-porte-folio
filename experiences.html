@@ -98,6 +98,26 @@
       margin-bottom: 6px;
     }
 
+    /* --- Neutralisation des conflits avec style.css global --- */
+
+    /* Le CSS global force flex sur toutes les sections, ce qui casse le carrousel */
+    #experiences.container {
+      display: block !important;
+      align-items: unset !important;
+      flex-direction: unset !important;
+      min-height: unset !important;
+    }
+
+    /* La col Bootstrap doit pouvoir prendre toute sa largeur */
+    #experiences .col-lg-8 {
+      width: 100%;
+    }
+
+    /* Le wrapper du carrousel ne doit pas être contraint par un parent flex */
+    .carousel-exp-wrapper {
+      width: 100%;
+    }
+
     /* --- Responsive mobile (< 576px) --- */
     @media (max-width: 575px) {
 

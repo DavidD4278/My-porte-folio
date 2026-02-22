@@ -118,79 +118,72 @@
       width: 100%;
     }
 
-    /* --- Responsive mobile (< 576px) --- */
+    /* --- Responsive mobile (< 576px) : scroll horizontal natif --- */
     @media (max-width: 575px) {
 
-      html, body {
-        overflow-x: hidden;
-        width: 100%;
-      }
+      body { overflow-x: hidden; }
 
-      #experiences.container {
-        padding-left: 8px;
-        padding-right: 8px;
-        overflow: hidden;
-      }
-
-      /* Supprime les paddings Bootstrap de la colonne */
-      #experiences .col-lg-8 {
-        padding-left: 0;
-        padding-right: 0;
-      }
-
+      /* Scroll natif horizontal avec snap */
       .carousel-exp-wrapper {
-        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        padding-bottom: 4px;
         max-width: 100%;
-        overflow: hidden;
       }
+
+      .carousel-exp-wrapper::-webkit-scrollbar { display: none; }
 
       .carousel-exp-track {
-        width: 100%;
+        display: flex;
+        transform: none !important;  /* désactive le JS translateX */
+        transition: none !important;
+        width: max-content;
       }
 
+      /* Chaque carte = 85% écran, on voit un aperçu de la suivante */
       .carousel-exp-slide {
-        min-width: 100%;
-        width: 100%;
-        padding: 0;
+        min-width: 85vw;
+        max-width: 85vw;
+        padding: 0 6px;
+        scroll-snap-align: start;
         box-sizing: border-box;
       }
 
-      .carousel-exp-slide .card {
-        width: 100%;
-        box-sizing: border-box;
-        margin: 0;
-        border-radius: 0.5rem;
-      }
+      .carousel-exp-slide .card-body  { padding: 1rem 0.75rem; }
+      .carousel-exp-slide .card-footer { padding: 0.75rem; }
 
-      .carousel-exp-slide .card-body {
-        padding: 1rem 0.85rem;
-      }
-
-      .carousel-exp-slide .card-footer {
-        padding: 0.75rem 0.85rem;
-      }
-
-      /* Listes en pleine largeur, plus de d-inline-block */
       .carousel-exp-slide .list-unstyled.d-inline-block {
         display: block !important;
         width: 100%;
         text-align: left;
-        padding-left: 0;
       }
 
-      .nom-hero {
-        font-size: 1.3rem;
-      }
+      /* Cacher flèches et compteur (inutiles avec le scroll natif) */
+      .carousel-btn, .carousel-counter { display: none; }
 
-      .carousel-exp-slide h4.card-title {
-        font-size: 1rem;
-      }
+      /* Points plus grands pour mobile */
+      .carousel-dot { width: 12px; height: 12px; }
+
+      .nom-hero { font-size: 1.3rem; }
 
       .text-center .btn {
         display: block;
         width: 100%;
         margin-left: 0 !important;
         margin-top: 0.75rem;
+      }
+
+      #experiences.container {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      #experiences .col-lg-8 {
+        padding-left: 0;
+        padding-right: 0;
       }
     }
   </style>
@@ -201,7 +194,7 @@
       <div class="container d-flex align-items-center">
 
         <a class="navbar-brand d-flex align-items-center me-0" href="index.html">
-          <img src="Moi-rond.png" alt="Logo" width="60" height="60" class="rounded-circle me-2">
+          <img src="/Moi-rond.png" alt="Logo" width="60" height="60" class="rounded-circle me-2">
           <span>David Delahaye</span>
         </a>
 

@@ -118,57 +118,59 @@
       width: 100%;
     }
 
-    /* --- Responsive mobile (< 576px) : scroll horizontal natif --- */
+    /* --- Responsive mobile (< 576px) : cartes empilées verticalement --- */
     @media (max-width: 575px) {
 
       body { overflow-x: hidden; }
 
-      /* Scroll natif horizontal avec snap */
+      /* On désactive complètement le carrousel */
       .carousel-exp-wrapper {
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-        padding-bottom: 4px;
-        max-width: 100%;
+        overflow: visible;
       }
-
-      .carousel-exp-wrapper::-webkit-scrollbar { display: none; }
 
       .carousel-exp-track {
-        display: flex;
-        transform: none !important;  /* désactive le JS translateX */
+        display: block !important;   /* les slides s'empilent verticalement */
+        transform: none !important;  /* annule le translateX du JS */
         transition: none !important;
-        width: max-content;
+        width: 100%;
       }
 
-      /* Chaque carte = 85% écran, on voit un aperçu de la suivante */
+      /* Chaque slide prend toute la largeur et s'affiche normalement */
       .carousel-exp-slide {
-        min-width: 85vw;
-        max-width: 85vw;
-        padding: 0 6px;
-        scroll-snap-align: start;
-        box-sizing: border-box;
+        min-width: 100%;
+        width: 100%;
+        padding: 0;
+        margin-bottom: 1.25rem;
+        display: block;
       }
 
+      /* Paddings internes réduits */
       .carousel-exp-slide .card-body  { padding: 1rem 0.75rem; }
       .carousel-exp-slide .card-footer { padding: 0.75rem; }
 
+      /* Listes en pleine largeur */
       .carousel-exp-slide .list-unstyled.d-inline-block {
         display: block !important;
         width: 100%;
         text-align: left;
       }
 
-      /* Cacher flèches et compteur (inutiles avec le scroll natif) */
-      .carousel-btn, .carousel-counter { display: none; }
+      /* Cacher tout le système de navigation du carrousel */
+      .carousel-btn,
+      .carousel-counter,
+      .carousel-dots {
+        display: none !important;
+      }
 
-      /* Points plus grands pour mobile */
-      .carousel-dot { width: 12px; height: 12px; }
-
+      /* Titre */
       .nom-hero { font-size: 1.3rem; }
 
+      /* Hint de navigation caché aussi */
+      #experiences > p.text-center {
+        display: none;
+      }
+
+      /* Boutons CV empilés pleine largeur */
       .text-center .btn {
         display: block;
         width: 100%;
@@ -176,15 +178,8 @@
         margin-top: 0.75rem;
       }
 
-      #experiences.container {
-        padding-left: 8px;
-        padding-right: 8px;
-      }
-
-      #experiences .col-lg-8 {
-        padding-left: 0;
-        padding-right: 0;
-      }
+      #experiences.container { padding-left: 12px; padding-right: 12px; }
+      #experiences .col-lg-8 { padding-left: 0; padding-right: 0; }
     }
   </style>
 </head>
@@ -230,6 +225,17 @@
 
       <div class="row justify-content-center">
         <div class="col-lg-8">
+ <div class="d-flex align-items-center justify-content-center gap-3 mt-4">
+            <button class="carousel-btn" id="btnPrev" onclick="changeSlide(-1)" disabled>
+              <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <span class="carousel-counter" id="carouselCounter">1 / 5</span>
+
+            <button class="carousel-btn" id="btnNext" onclick="changeSlide(1)">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
 
           <!-- Points indicateurs HAUT -->
           <div class="carousel-dots mb-3" id="carouselDotsTop"></div>
@@ -423,7 +429,15 @@
       });
     });
 
+    // Vérifie si on est sur mobile
+    function isMobile() {
+      return window.innerWidth <= 575;
+    }
+
     function goTo(index) {
+      // Sur mobile on ne fait rien, les cartes sont empilées
+      if (isMobile()) return;
+
       current = index;
       track.style.transform = `translateX(-${current * 100}%)`;
       counter.textContent = `${current + 1} / ${total}`;
@@ -441,9 +455,19 @@
     }
 
     function changeSlide(direction) {
+      if (isMobile()) return;
       const next = current + direction;
       if (next >= 0 && next < total) goTo(next);
     }
+
+    // Si on redimensionne la fenêtre (ex: rotation mobile), on remet à zéro
+    window.addEventListener('resize', () => {
+      if (isMobile()) {
+        track.style.transform = 'none';
+      } else {
+        track.style.transform = `translateX(-${current * 100}%)`;
+      }
+    });
 
     // Navigation clavier
     document.addEventListener('keydown', e => {

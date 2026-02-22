@@ -231,6 +231,9 @@
       <div class="row justify-content-center">
         <div class="col-lg-8">
 
+          <!-- Points indicateurs HAUT -->
+          <div class="carousel-dots mb-3" id="carouselDotsTop"></div>
+
           <!-- Carrousel -->
           <div class="carousel-exp-wrapper">
             <div class="carousel-exp-track" id="carouselTrack">
@@ -398,23 +401,26 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    const track    = document.getElementById('carouselTrack');
-    const btnPrev  = document.getElementById('btnPrev');
-    const btnNext  = document.getElementById('btnNext');
-    const counter  = document.getElementById('carouselCounter');
-    const dotsWrap = document.getElementById('carouselDots');
+    const track       = document.getElementById('carouselTrack');
+    const btnPrev     = document.getElementById('btnPrev');
+    const btnNext     = document.getElementById('btnNext');
+    const counter     = document.getElementById('carouselCounter');
+    const dotsWrap    = document.getElementById('carouselDots');
+    const dotsWrapTop = document.getElementById('carouselDotsTop');
 
     const slides = track.querySelectorAll('.carousel-exp-slide');
     const total  = slides.length;
     let current  = 0;
 
-    // Créer les points
+    // Créer les points (bas ET haut)
     slides.forEach((_, i) => {
-      const dot = document.createElement('div');
-      dot.classList.add('carousel-dot');
-      if (i === 0) dot.classList.add('active');
-      dot.addEventListener('click', () => goTo(i));
-      dotsWrap.appendChild(dot);
+      [dotsWrap, dotsWrapTop].forEach(wrap => {
+        const dot = document.createElement('div');
+        dot.classList.add('carousel-dot');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goTo(i));
+        wrap.appendChild(dot);
+      });
     });
 
     function goTo(index) {
@@ -426,9 +432,11 @@
       btnPrev.disabled = current === 0;
       btnNext.disabled = current === total - 1;
 
-      // Points
-      dotsWrap.querySelectorAll('.carousel-dot').forEach((d, i) => {
-        d.classList.toggle('active', i === current);
+      // Sync les deux rangées de points
+      [dotsWrap, dotsWrapTop].forEach(wrap => {
+        wrap.querySelectorAll('.carousel-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === current);
+        });
       });
     }
 
@@ -437,7 +445,7 @@
       if (next >= 0 && next < total) goTo(next);
     }
 
-    // Navigation clavier (flèches)
+    // Navigation clavier
     document.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft')  changeSlide(-1);
       if (e.key === 'ArrowRight') changeSlide(1);
